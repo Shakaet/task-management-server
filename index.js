@@ -224,6 +224,51 @@ async function run() {
       }
     });
 
+
+
+    app.put("/task/:id",async(req,res)=>{
+
+
+      let task= req.body
+
+      let idx=req.params.id
+
+      const filter = { _id:new ObjectId(idx) };
+
+      const updateDoc = {
+        $set: {
+          title: task.title,
+          description: task.description,
+          category: task.category,
+          timestamp: task.timestamp
+
+        },
+      };
+
+      const result = await taskDb.updateOne(filter, updateDoc);
+      res.send(result)
+    })
+
+    app.get("/task/:id",async(req,res)=>{
+
+     let idx=req.params.id
+      const query = {_id:new ObjectId(idx) };
+
+      const result = await taskDb.findOne(query);
+      res.send(result)
+    })
+
+
+    app.delete("/tasks/:id",async(req,res)=>{
+
+      let idx=req.params.id
+      let query={_id:new ObjectId(idx)}
+      const result = await taskDb.deleteOne(query);
+
+      res.send(result)
+
+    })
+
     // Update Task Category (PATCH request)
     app.patch("/tasks/:id", async (req, res) => {
       try {
