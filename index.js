@@ -195,26 +195,35 @@ async function run() {
     });
 
     // Get All Tasks
-    app.get("/alltask", async (req, res) => {
-      try {
-        const tasks = await taskDb.find().toArray();
-        res.status(200).send(tasks);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-        res.status(500).send({ message: "Error fetching tasks" });
-      }
+    app.get("/alltask/:email", async (req, res) => {
+      // try {
+      //   const tasks = await taskDb.find().toArray();
+      //   res.status(200).send(tasks);
+      // } catch (error) {
+      //   console.error("Error fetching tasks:", error);
+      //   res.status(500).send({ message: "Error fetching tasks" });
+      // }
+
+      let email=req.params.email
+      let query={email}
+
+      let tasks=await taskDb.find(query).toArray()
+      res.send(tasks)
     });
 
     // Add Task
     app.post("/addtask", async (req, res) => {
       try {
         let task = req.body;
+        console.log(task)
+        
 
         const result = await taskDb.insertOne({
           title: task.title,
           description: task.description,
           category: task.category,
-          timestamp: task.timestamp
+          timestamp: task.timestamp,
+          email:task.email
         });
 
         res.status(201).send(result);
